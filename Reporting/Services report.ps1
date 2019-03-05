@@ -6,21 +6,18 @@ $filename = $date + ".csv"
 
 foreach($line in Get-Content ip.txt)
 {
-	if($line -match $regex)
-	{	
-		$connectionResult = Test-Connection -ComputerName $line -Count 5 -Quiet
-		if ($connectionResult -eq $False)
-			{
-				"" >> $filename
-				$line + ",Connection status:,Failed" >> $filename
-			}
-			
-		elseif ($connectionResult -eq $True)
-			{
-				$serviceStatus = Get-Service $service -ComputerName $line
-				"" >> $filename
-				$line + ",Connection status:,OK" >> $filename
-				$serviceStatus | select-object Name,Status | export-csv -path $filename -Append -Force
-			}
-	}
+	$connectionResult = Test-Connection -ComputerName $line -Count 5 -Quiet
+	if ($connectionResult -eq $False)
+		{
+			"" >> $filename
+			$line + ",Connection status:,Failed" >> $filename
+		}
+		
+	elseif ($connectionResult -eq $True)
+		{
+			$serviceStatus = Get-Service $service -ComputerName $line
+			"" >> $filename
+			$line + ",Connection status:,OK" >> $filename
+			$serviceStatus | select-object Name,Status | export-csv -path $filename -Append -Force
+		}
 }
