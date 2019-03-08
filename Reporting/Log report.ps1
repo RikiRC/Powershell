@@ -12,14 +12,19 @@ foreach($line in Get-Content ip.txt)
 	if ($connectionResult -eq $False)
 		{
 			"" >> $filename
-			$line + ",Connection status:,Failed" >> $filename
+			$line + ";Connection status:;Failed" >> $filename
 		}
 		
 	elseif ($connectionResult -eq $True)
 		{
 			$getEvent = Get-EventLog $lType -EntryType $eType -Newest $ammount
 			"" >> $filename
-			$line + ",Connection status:,OK" >> $filename
-			$getEvent.Message >> $filename
+			$line + ";Connection status:;OK" >> $filename
+			for($i=0; $i -lt $ammount; $i++)
+				{
+					$getEvent.TimeWritten.GetValue($i) >> $filename
+					$getEvent.Message.GetValue($i) >> $filename
+				}
 		}
 }
+
